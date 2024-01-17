@@ -1,0 +1,68 @@
+package ${package.ServiceImpl};
+
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import ${superServiceImplClassPackage};
+
+/**
+ * <p>
+ * $!{table.comment} 服务实现类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+@Transactional(readOnly = true)
+#if(${kotlin})
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>(), ${table.serviceName} {
+
+        }
+#else
+        public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}>implements ${table.serviceName} {
+
+        @Resource
+        private ${table.mapperName} ${table.mapperName.substring(0, 1).toLowerCase()}${table.mapperName.substring(1)};
+
+        @Override
+        public PageResult<${entity.substring(0,${entity.lastIndexOf("P")})}VO>page(Search${entity.substring(0,${entity.lastIndexOf("P")})}VO searchVO){
+        LambdaQueryWrapper<${entity}>wrapper=new LambdaQueryWrapper<>();
+        if(StringUtils.isNotBlank(searchVO.getName())){
+        wrapper.like(${entity}::getName,searchVO.getName());
+        }
+        wrapper.orderByDesc(${entity}::getId);
+        Page<${entity}>page=page(PageDTO.of(searchVO.getPageNo(),searchVO.getPageSize()),wrapper);
+        List<${entity}>records=page.getRecords();
+        List<${entity.substring(0,${entity.lastIndexOf("P")})}VO>list=${entity.substring(0,${entity.lastIndexOf("P")})}Convert.INSTANCE.poToVoList(records);
+        return PageResult.success(list,page.getTotal());
+        }
+
+        @Transactional(rollbackFor=Exception.class)
+        @Override
+        public boolean saveOrUpdate(Create${entity.substring(0,${entity.lastIndexOf("P")})}VO createVO){
+        // 编码不允许重复
+        LambdaQueryWrapper<${entity}>queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(${entity}::getCode,createVO.getCode());
+        if(projectMapper.exists(queryWrapper)){
+        throw new BusinessException(GlobalCodeEumn.BAD_REQUEST.getCode(),"项目编码重复！");
+        }
+    ${entity} po=${entity.substring(0,${entity.lastIndexOf("P")})}Convert.INSTANCE.createToPo(createVO);
+        int effectedNum;
+        if(createVO.getId()!=null){
+        effectedNum=${table.mapperName.substring(0, 1).toLowerCase()}${table.mapperName.substring(1)}.updateById(po);
+        }else{
+        po.setStatus(1);
+        effectedNum=${table.mapperName.substring(0, 1).toLowerCase()}${table.mapperName.substring(1)}.insert(po);
+        }
+        return effectedNum>0;
+        }
+
+        @Transactional(rollbackFor=Exception.class)
+        @Override
+        public boolean delete(Del${entity.substring(0,${entity.lastIndexOf("P")})}VO delDTO){
+        return ${table.mapperName.substring(0, 1).toLowerCase()}${table.mapperName.substring(1)}.deleteBatchIds(delDTO.getIds())>0;
+        }
+
+        }
+#end

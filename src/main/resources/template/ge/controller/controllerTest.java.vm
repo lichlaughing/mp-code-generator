@@ -1,0 +1,157 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${superServiceClassPackage};
+import com.seatone.framework.common.pojo.PageResult;
+import org.junit.FixMethodOrder;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.runners.MethodSorters;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器 单元测试
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@DisplayName("$!{table.comment} 前端控制器 单元测试")
+@SpringBootTest
+@AutoConfigureMockMvc
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+class ${table.controllerName}Test {
+
+        @Resource
+        private MockMvc mockMvc;
+
+        @Resource
+        private ${table.serviceName} ${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)};
+
+        @Test
+        @DisplayName("新增")
+        void t10() {
+                JSONObject param = new JSONObject();
+                // 其他参数
+                // param.put("name","123");
+                MvcResult mvcResult;
+                try {
+                        mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}/save")
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .content(param.toJSONString())
+                                )
+                                .andDo(MockMvcResultHandlers.print())
+                                .andReturn();
+                        MockHttpServletResponse response = mvcResult.getResponse();
+                        int status = response.getStatus();
+                        Assertions.assertEquals(status, HttpStatus.OK.value());
+                        String responseText = response.getContentAsString(StandardCharsets.UTF_8);
+                        JSONObject responseObj = JSONObject.parseObject(responseText);
+                        String prettyJson = ResultUtil.prettyJson(responseObj);
+                        System.out.println("新增结果：==↓");
+                        System.out.println(prettyJson);
+                        Assertions.assertEquals(responseObj.getInteger("code"), GlobalCodeEumn.SUCCESS.getCode());
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+        }
+
+        @Test
+        @DisplayName("更新")
+        void t20() {
+                LambdaQueryWrapper<${entity}> queryWrapper = new LambdaQueryWrapper<>();
+                // 查询条件
+                // queryWrapper.eq(${entity}::getProjectId, PROJECT_ID);
+                ${entity} po = ${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)}.list(queryWrapper).stream().findFirst().get();
+
+                JSONObject param = new JSONObject();
+                param.put("id", po.getId());
+                // 其他参数
+                // param.put("name","123");
+                MvcResult mvcResult;
+                try {
+                        mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}/save")
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .content(param.toJSONString())
+                                )
+                                .andDo(MockMvcResultHandlers.print())
+                                .andReturn();
+                        MockHttpServletResponse response = mvcResult.getResponse();
+                        int status = response.getStatus();
+                        Assertions.assertEquals(status, HttpStatus.OK.value());
+                        String responseText = response.getContentAsString(StandardCharsets.UTF_8);
+                        JSONObject responseObj = JSONObject.parseObject(responseText);
+                        String prettyJson = ResultUtil.prettyJson(responseObj);
+                        System.out.println("更新结果：==↓");
+                        System.out.println(prettyJson);
+                        Assertions.assertEquals(responseObj.getInteger("code"), GlobalCodeEumn.SUCCESS.getCode());
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+        }
+
+        @Test
+        @DisplayName("列表")
+        void t30() {
+                JSONObject param = new JSONObject();
+                //param.put("projectId", PROJECT_ID);
+                param.put("pageNum", 1);
+                param.put("pageSize", 10);
+                MvcResult mvcResult;
+                try {
+                        mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}/list")
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .content(param.toJSONString())
+                                )
+                                .andDo(MockMvcResultHandlers.print())
+                                .andReturn();
+                        MockHttpServletResponse response = mvcResult.getResponse();
+                        int status = response.getStatus();
+                        Assertions.assertEquals(status, HttpStatus.OK.value());
+                        String responseText = response.getContentAsString(StandardCharsets.UTF_8);
+                        JSONObject responseObj = JSONObject.parseObject(responseText);
+                        String prettyJson = ResultUtil.prettyJson(responseObj);
+                        System.out.println("列表结果：==↓");
+                        System.out.println(prettyJson);
+                        Assertions.assertEquals(responseObj.getInteger("code"), GlobalCodeEumn.SUCCESS.getCode());
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+        }
+        @Test
+        @DisplayName("删除")
+        void t40() {
+                LambdaQueryWrapper<${entity}> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(${entity}::getProjectId, PROJECT_ID);
+                List<${entity}> list = ${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)}.list(queryWrapper);
+                List<Integer> idList = list.stream().map(${entity}::getId).collect(Collectors.toList());
+
+                JSONObject param = new JSONObject();
+                param.put("ids", idList);
+                MvcResult mvcResult;
+                try {
+                        mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete("/${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}/del")
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                        .content(param.toJSONString())
+                                )
+                                .andDo(MockMvcResultHandlers.print())
+                                .andReturn();
+                        MockHttpServletResponse response = mvcResult.getResponse();
+                        int status = response.getStatus();
+                        Assertions.assertEquals(status, HttpStatus.OK.value());
+                        String responseText = response.getContentAsString(StandardCharsets.UTF_8);
+                        JSONObject responseObj = JSONObject.parseObject(responseText);
+                        String prettyJson = ResultUtil.prettyJson(responseObj);
+                        System.out.println("删除结果：==↓");
+                        System.out.println(prettyJson);
+                        Assertions.assertEquals(responseObj.getInteger("code"), GlobalCodeEumn.SUCCESS.getCode());
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+        }
+
+}
+

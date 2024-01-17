@@ -1,0 +1,28 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${superServiceClassPackage};
+import com.seatone.framework.common.pojo.PageResult;
+
+/**
+ * <p>
+ * $!{table.comment} 服务类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${kotlin})
+interface ${table.serviceName} : ${superServiceClass}<${entity}>
+#else
+@Validated
+public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+
+        PageResult<${entity.substring(0,${entity.lastIndexOf("P")})}VO> page(@Valid  Search${entity.substring(0,${entity.lastIndexOf("P")})}VO searchVO);
+
+        @Validated({Create.class, Update.class})
+        boolean saveOrUpdate(@Valid Create${entity.substring(0,${entity.lastIndexOf("P")})}VO createVO);
+
+        boolean delete(@Valid Del${entity.substring(0,${entity.lastIndexOf("P")})}VO delVO);
+        }
+#end

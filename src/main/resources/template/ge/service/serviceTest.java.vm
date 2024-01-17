@@ -1,0 +1,71 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${superServiceClassPackage};
+import org.junit.FixMethodOrder;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.runners.MethodSorters;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+/**
+ * <p>
+ * $!{table.comment} 服务类 单元测试
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@DisplayName("$!{table.comment} 服务类 单元测试")
+@SpringBootTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+class ${table.serviceName}Test {
+
+    @Resource
+    private ${table.serviceName} ${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)};
+
+    private static final Del${entity.substring(0,${entity.lastIndexOf("P")})}VO DEL = new Del${entity.substring(0,${entity.lastIndexOf("P")})}VO();
+
+    @Test
+    @DisplayName("新增")
+    void t10() {
+        Create${entity.substring(0,${entity.lastIndexOf("P")})}VO vo = new Create${entity.substring(0,${entity.lastIndexOf("P")})}VO();
+        boolean b = ${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)}.saveOrUpdate(vo);
+        Assertions.assertTrue(b);
+    }
+
+    @Test
+    @DisplayName("更新")
+    void t20() {
+        LambdaQueryWrapper<${entity}> queryWrapper = new LambdaQueryWrapper<>();
+        ${entity} po = ${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)}.list(queryWrapper).stream().findFirst().get();
+
+        Create${entity.substring(0,${entity.lastIndexOf("P")})}VO vo = new Create${entity.substring(0,${entity.lastIndexOf("P")})}VO();
+        vo.setId(po.getId());
+        boolean b = ${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)}.saveOrUpdate(vo);
+        Assertions.assertTrue(b);
+    }
+
+    @Test
+    @DisplayName("列表")
+    void t30() {
+        Search${entity.substring(0,${entity.lastIndexOf("P")})}VO vo = new Search${entity.substring(0,${entity.lastIndexOf("P")})}VO();
+        vo.setPageNo(1);
+        vo.setPageSize(100);
+        PageResult<${entity.substring(0,${entity.lastIndexOf("P")})}VO> page = ${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)}.page(vo);
+        assertThat(page.getTotal()).isPositive();
+        List<Integer> list = new ArrayList<>();
+        for (${entity.substring(0,${entity.lastIndexOf("P")})}VO record : page.getList()) {
+            list.add(record.getId());
+        }
+        DEL.setIds(list);
+    }
+
+    @Test
+    @DisplayName("删除")
+    void t40() {
+        Assertions.assertTrue(${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)}.delete(DEL));
+    }
+}

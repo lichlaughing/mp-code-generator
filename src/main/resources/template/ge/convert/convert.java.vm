@@ -1,0 +1,20 @@
+package ${package.Service};
+
+/**
+ * $!{table.comment} 转换服务
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Mapper
+public interface ${entity.substring(0,${entity.lastIndexOf("P")})}Convert {
+
+    ${entity.substring(0,${entity.lastIndexOf("P")})}Convert INSTANCE = Mappers.getMapper(${entity.substring(0,${entity.lastIndexOf("P")})}Convert.class);
+
+    ${entity.substring(0,${entity.lastIndexOf("P")})}VO poToVo(${entity.substring(0,${entity.lastIndexOf("P")})}PO po);
+
+    ${entity} createToPo(Create${entity.substring(0,${entity.lastIndexOf("P")})}VO create);
+
+    List<${entity.substring(0,${entity.lastIndexOf("P")})}VO> poToVoList(List<${entity}> list);
+}
+

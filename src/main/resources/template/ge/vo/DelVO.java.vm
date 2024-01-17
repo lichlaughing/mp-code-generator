@@ -1,0 +1,17 @@
+package ${package.Service};
+
+/**
+ * $!{table.comment} 删除参数
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Data
+@ApiModel
+public class Del${entity.substring(0,${entity.lastIndexOf("P")})}VO {
+    @Valid
+    @NotEmpty(message = "ID不能为空！")
+    @ApiModelProperty(value = "多个ID")
+    private List<Integer> ids;
+}
+

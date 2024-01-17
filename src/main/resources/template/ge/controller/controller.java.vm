@@ -1,0 +1,67 @@
+package ${package.Controller};
+
+import org.springframework.web.bind.annotation.RequestMapping;
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Api(tags = "XX")
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+    #if(${superControllerClass})
+    public class ${table.controllerName} extends ${superControllerClass} {
+    #else
+    public class ${table.controllerName} {
+    #end
+
+        @Resource
+        private ${table.serviceName} ${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)};
+
+        @ApiOperation(value = "XX列表")
+        @PostMapping("/list")
+        public PageResult<${entity.substring(0,${entity.lastIndexOf("P")})}VO> list(@RequestBody Search${entity.substring(0,${entity.lastIndexOf("P")})}VO searchVO){
+            PageResult<${entity.substring(0,${entity.lastIndexOf("P")})}VO> page=${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)}.page(searchVO);
+            return page;
+        }
+
+        @ApiOperation(value = "创建/更新XX")
+        @PostMapping("/save")
+        public Result<Void> create(@RequestBody Create${entity.substring(0,${entity.lastIndexOf("P")})}VO createVO){
+        if(${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)}.saveOrUpdate(createVO)){
+        return Result.success();
+        }
+        return Result.failure();
+        }
+
+        @ApiOperation(value = "删除XX")
+        @DeleteMapping("/del")
+        public Result<Void> delete(@RequestBody Del${entity.substring(0,${entity.lastIndexOf("P")})}VO delVO){
+        boolean b=${table.serviceName.substring(0, 1).toLowerCase()}${table.serviceName.substring(1)}.delete(delVO);
+        if(b){
+        return Result.success();
+        }
+        return Result.failure();
+        }
+        }
+#end
